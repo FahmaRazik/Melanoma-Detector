@@ -1,46 +1,5 @@
-/* .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #007bff;
-    padding: 10px 20px;
-    color: white;
-}
-
-.navbar-logo {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.navbar-links {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-}
-
-.navbar-links li a {
-    text-decoration: none;
-    color: white;
-    font-size: 16px;
-}
-
-.navbar-auth .btn-auth {
-    background-color: white;
-    border: none;
-    color: #007bff;
-    padding: 5px 10px;
-    margin-left: 5px;
-    cursor: pointer;
-    border-radius: 3px;
-}
-
-.btn-auth:hover {
-    background-color: #0056b3;
-    color: white;
-}
- */
-
- .navbar {
+/* Navbar Styling */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -50,11 +9,13 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Logo */
 .navbar-logo {
     font-size: 20px;
     font-weight: bold;
 }
 
+/* Navbar Links */
 .navbar-links {
     list-style: none;
     display: flex;
@@ -72,14 +33,21 @@
     color: #ffdd57;
 }
 
-.navbar-auth .btn-auth {
+/* 🔹 Navbar Auth Buttons (Register & Login) - Fixed alignment */
+.navbar-auth {
+    display: flex;
+    align-items: center;
+    gap: 10px;  /* 🔹 Ensures buttons are side by side */
+}
+
+.btn-auth {
     background-color: white;
     border: none;
     color: #007bff;
-    padding: 5px 10px;
-    margin-left: 5px;
+    padding: 8px 15px;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 5px;
+    font-size: 16px;
     transition: all 0.3s ease;
 }
 
@@ -88,10 +56,12 @@
     color: white;
 }
 
+/* 🔹 User Dropdown Menu */
 .user-menu {
     position: relative;
 }
 
+/* Profile Icon Button */
 .btn-icon {
     background: none;
     border: none;
@@ -109,6 +79,7 @@
     font-size: 24px;
 }
 
+/* Dropdown Menu */
 .dropdown {
     position: absolute;
     top: 40px;
@@ -119,8 +90,12 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     z-index: 10;
     animation: fadeIn 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
 }
 
+/* Dropdown Items */
 .dropdown-item {
     background: none;
     border: none;
@@ -138,7 +113,133 @@
     text-decoration: underline;
 }
 
-/* Fade-in animation for dropdown */
+/* 🔹 Fade-in animation for dropdown */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff;
+    padding: 10px 20px;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Logo */
+.navbar-logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Navbar Links */
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+.navbar-links li a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.navbar-links li a:hover {
+    color: #ffdd57;
+}
+
+/* 🔹 Navbar Auth Buttons (Register & Login) - Fixed alignment */
+.navbar-auth {
+    display: flex;
+    align-items: center;
+    gap: 10px;  /* 🔹 Ensures buttons are side by side */
+}
+
+.btn-auth {
+    background-color: white;
+    border: none;
+    color: #007bff;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.btn-auth:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* 🔹 User Dropdown Menu */
+.user-menu {
+    position: relative;
+}
+
+/* Profile Icon Button */
+.btn-icon {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.2s ease;
+}
+
+.btn-icon:hover {
+    transform: scale(1.1);
+}
+
+.user-icon {
+    font-size: 24px;
+}
+
+/* Dropdown Menu */
+.dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    animation: fadeIn 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+}
+
+/* Dropdown Items */
+.dropdown-item {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* 🔹 Fade-in animation for dropdown */
 @keyframes fadeIn {
     from {
         opacity: 0;

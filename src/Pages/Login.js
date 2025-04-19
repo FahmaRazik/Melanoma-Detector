@@ -1,64 +1,123 @@
 
+
+
 // import React, { useState } from 'react';
-// import { Link } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 // import './Login.css';
 
+// // Firebase imports
+// import { signInWithEmailAndPassword } from 'firebase/auth';
+// import { auth } from '../Firebase'; // Correct path to Firebase.js
+
 // const Login = () => {
-//     const [username, setUsername] = useState('');
-//     const [password, setPassword] = useState('');
+//     const [username, setUsername] = useState(''); // Email state
+//     const [password, setPassword] = useState(''); // Password state
+//     const navigate = useNavigate(); // Hook for navigation
 
 //     const handleLogin = () => {
-//         alert('Login successful!');
+//         if (username && password) {
+//             // Firebase authentication
+//             signInWithEmailAndPassword(auth, username, password)
+//                 .then((userCredential) => {
+//                     const user = userCredential.user;
+//                     console.log('Logged in user:', user);
+//                     alert('Login successful!');
+//                     navigate('/'); // Redirect to Home after login
+//                 })
+//                 .catch((error) => {
+//                     const errorCode = error.code;
+//                     const errorMessage = error.message;
+//                     console.error('Error Code:', errorCode);
+//                     console.error('Error Message:', errorMessage);
+//                     alert(`Error: ${errorMessage}`);
+//                 });
+//         } else {
+//             alert('Please enter both username and password');
+//         }
 //     };
 
 //     return (
 //         <div className="login-container">
 //             <h1>Login</h1>
 //             <div className="login-form">
-//                 <label>Username</label>
 //                 <input
-//                     type="text"
+//                     type="email"
 //                     value={username}
 //                     onChange={(e) => setUsername(e.target.value)}
-//                     placeholder="Enter your username"
+//                     placeholder="Email"
 //                 />
-//                 <label>Password</label>
 //                 <input
 //                     type="password"
 //                     value={password}
 //                     onChange={(e) => setPassword(e.target.value)}
-//                     placeholder="Enter your password"
+//                     placeholder="Password"
 //                 />
 //                 <button className="login-btn" onClick={handleLogin}>
 //                     Login
 //                 </button>
 //             </div>
-//             <div className="login-links">
-//                 <Link to="/register" className="link">
-//                     Not registered yet?
-//                 </Link>
+//             <div>
+//                 <p>Not registered yet? <a href="/register">Register here</a></p>
 //             </div>
 //         </div>
 //     );
 // };
 
 // export default Login;
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../Firebase"; // Import Firebase instance
+import "./Login.css";
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Login.css';
+const Login = () => {
+    const [email, setEmail] = useState(""); 
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate(); 
 
-const Login = ({ onLogin }) => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+    const handleLogin = async () => {
+        if (!email || !password) {
+            alert("Please enter both email and password");
+            return;
+        }
 
-    const handleLogin = () => {
-        if (username && password) {
-            onLogin(); // Call the login function from props
-            navigate('/'); // Redirect to Home after login
-        } else {
-            alert('Please enter both username and password');
+        setLoading(true); 
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            console.log("Logged in user:", user);
+            alert("Login successful!");
+
+            // ✅ Redirect user to Detection page
+            navigate("/detection");
+
+        } catch (error) {
+            let errorMessage = "Login failed. Please try again.";
+
+            // Handle Firebase Authentication Errors
+            switch (error.code) {
+                case "auth/user-not-found":
+                    errorMessage = "No account found with this email.";
+                    break;
+                case "auth/wrong-password":
+                    errorMessage = "Incorrect password.";
+                    break;
+                case "auth/invalid-email":
+                    errorMessage = "Invalid email format.";
+                    break;
+                case "auth/too-many-requests":
+                    errorMessage = "Too many login attempts. Try again later.";
+                    break;
+                default:
+                    errorMessage = error.message;
+            }
+
+            alert(`Error: ${errorMessage}`);
+        } finally {
+            setLoading(false); 
         }
     };
 
@@ -67,19 +126,21 @@ const Login = ({ onLogin }) => {
             <h1>Login</h1>
             <div className="login-form">
                 <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
                 />
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
+                    placeholder="Enter your password"
+                    required
                 />
-                <button className="login-btn" onClick={handleLogin}>
-                    Login
+                <button className="login-btn" onClick={handleLogin} disabled={loading}>
+                    {loading ? "Logging in..." : "Login"}
                 </button>
             </div>
             <div>
@@ -90,3 +151,4 @@ const Login = ({ onLogin }) => {
 };
 
 export default Login;
+

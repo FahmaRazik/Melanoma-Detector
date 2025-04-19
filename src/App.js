@@ -1,58 +1,46 @@
-// import React from 'react';
-// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// import Navbar from './Components/Navbar';
-// import Home from './Pages/Home';
-// import About from './Pages/About';
-// import Login from './Pages/Login';
-// import Register from './Pages/Register';
-// import Detection from './Pages/Detection';
-
-// const App = () => {
-//     return (
-//         <Router>
-//             <Navbar />
-//             <Routes>
-//                 <Route path="/" element={<Home />} />
-//                 <Route path="/about" element={<About />} />
-//                 <Route path="/login" element={<Login />} />
-//                 <Route path="/register" element={<Register />} />
-//                 <Route path="/detection" element={<Detection />} />
-//             </Routes>
-//         </Router>
-//     );
-// };
-
-// export default App;
-
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './Components/Navbar';
-import Home from './Pages/Home';
-import About from './Pages/About';
-import Login from './Pages/Login';
-import Register from './Pages/Register';
-import Detection from './Pages/Detection';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import Navbar from "./Components/Navbar";
+import Home from "./Pages/Home";
+import About from "./Pages/About";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Detection from "./Pages/Detection";
+import ChangePassword from "./Pages/ChangePassword"; // ✅ Added Change Password Page
+import { auth } from "./Firebase"; // Firebase Authentication
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const App = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null); // ✅ Track user instead of isLoggedIn
 
-    const handleLogin = () => {
-        setIsLoggedIn(true);
-    };
+    // 🔹 Track authentication state changes
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+        return () => unsubscribe(); // Cleanup on unmount
+    }, []);
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
+    const handleLogout = async () => {
+        await signOut(auth);
+        setUser(null);
     };
 
     return (
         <Router>
-            <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+            <Navbar isLoggedIn={!!user} onLogout={handleLogout} />
             <Routes>
-                <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/detection" element={<Detection />} />
+                <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+                <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
+
+                {/* 🔹 Protected Routes - Only logged-in users can access */}
+                <Route path="/detection" element={user ? <Detection /> : <Navigate to="/login" />} />
+                <Route path="/change-password" element={user ? <ChangePassword /> : <Navigate to="/login" />} />
+
+                {/* 404 Page (Optional) */}
+                <Route path="*" element={<h1>404 - Page Not Found</h1>} />
             </Routes>
         </Router>
     );
